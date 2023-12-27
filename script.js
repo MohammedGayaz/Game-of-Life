@@ -1,3 +1,10 @@
+/*
+ * The rules for the evolution of each cell are as follows:
+ * Any live cell with fewer than two live neighbors dies, as if by underpopulation.
+ * Any live cell with two or three live neighbors lives on to the next generation.
+ * Any live cell with more than three live neighbors dies, as if by overpopulation.
+ * Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+*/
 const canvas = document.querySelector("canvas");
 const Height = 500;
 const Width = 500;
@@ -8,6 +15,7 @@ canvas.width = Width;
 const brush = canvas.getContext('2d');
 
 class Cell {
+    // creates a small rectange with width and height of 10
     constructor(x, y, state) {
         this.x = x;
         this.y = y;
@@ -16,12 +24,15 @@ class Cell {
         this.cellHeight = 10;
     }
 
+    // cell alive( state : true ) are green and other lightgray (dead) 
     draw() {
         brush.strokeRect(this.x, this.y, this.cellWidth, this.cellHeight);
         brush.fillStyle = this.state ? "green" : "lightgray";
         brush.fillRect(this.x, this.y, this.cellWidth, this.cellHeight);
     }
 
+    // get the surrounding neighbours of a given instance
+    // x, y : x_coord and y_coord of that instance (rectange)
     getNeighbours(x, y) {
         const neighbours = [];
         const positions = [
@@ -45,6 +56,7 @@ class Cell {
         return neighbours;
     }
 
+    // check the number of alive neighbours and update according to the rules
     update() {
         const neighbours = this.getNeighbours(this.x, this.y);
         const numberOfAlive = neighbours.filter(cell => cell.state).length;
@@ -59,10 +71,11 @@ class Cell {
     }
 }
 
+// creates an array of cells whos length is (width * height)
 cellArray = [];
 for (let x = 0; x < Width; x += 10) {
     for (let y = 0; y < Height; y += 10) {
-        let state = Math.random() <= 0.25;
+        let state = Math.random() <= 0.25; // if math.random lessthan 0.25 then true (alive) else false (dead) 
         cellArray.push(new Cell(x, y, state));
     }
 }
